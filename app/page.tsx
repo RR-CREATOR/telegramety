@@ -70,31 +70,34 @@ export default function EtyMiniApp() {
     }
   }
 
-  const handleShare = () => {
+  const handleShare = async () => {
     if (!result) return
     const shareText = `📚 ${result.word}\n\n📖 Etymology: ${result.etymology}\n\n💡 Mnemonic: ${result.mnemonic ?? "Not provided"}`
-    const telegramShareUrl = `https://t.me/share/url?text=${encodeURIComponent(shareText)}`
+    const telegramShareUrl = `https://t.me/share/url?url=https://telegramety.vercel.app/&text=${encodeURIComponent(shareText)}`
     const tg = (window as TelegramWindow)?.Telegram?.WebApp
     const isTelegram = typeof navigator !== "undefined" && navigator.userAgent.toLowerCase().includes("telegram")
+    console.log("isTelegram:", isTelegram)
+    window.location.href = telegramShareUrl
+    return
+    // if (tg) {
+    //   if (tg.shareMessage) {
 
-    if (tg) {
-      if (tg.shareMessage) {
-        tg.shareMessage(shareText)
-        return
-      }
-      if (tg.openTelegramLink) {
-        tg.openTelegramLink(telegramShareUrl)
-        return
-      }
-      // When running inside Telegram but without the WebApp share APIs, force the Telegram share sheet.
-      if (isTelegram) {
-        window.location.href = telegramShareUrl
-        return
-      }
-    } else if (isTelegram) {
-      window.location.href = telegramShareUrl
-      return
-    }
+    //     tg.shareMessage(shareText)
+    //     return
+    //   }
+    //   if (tg.openTelegramLink) {
+    //     tg.openTelegramLink(telegramShareUrl)
+    //     return
+    //   }
+    //   // When running inside Telegram but without the WebApp share APIs, force the Telegram share sheet.
+    //   if (isTelegram) {
+    //     window.location.href = telegramShareUrl
+    //     return
+    //   }
+    // } else if (isTelegram) {
+    //   window.location.href = telegramShareUrl
+    //   return
+    // }
 
     navigator.share?.({ text: shareText }).catch(() => {
       navigator.clipboard.writeText(shareText)
