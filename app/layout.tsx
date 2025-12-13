@@ -18,9 +18,9 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="dark" suppressHydrationWarning>
       <head>
-        <Script src="https://telegram.org/js/telegram-web-app.js?59" strategy="beforeInteractive" />
+        <Script src="/telegram-wep-app.js" strategy="beforeInteractive" />
       </head>
       <body className={`font-sans antialiased`}>
         {children}

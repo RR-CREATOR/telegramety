@@ -32,6 +32,7 @@ export default function EtyMiniApp() {
 
   useEffect(() => {
     const tg = (window as TelegramWindow)?.Telegram?.WebApp
+    console.log("Telegram WebApp:", tg)
     tg?.ready()
   }, [])
 
