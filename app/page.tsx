@@ -72,15 +72,26 @@ export default function EtyMiniApp() {
   const handleShare = () => {
     if (!result) return
     const shareText = `📚 ${result.word}\n\n📖 Etymology: ${result.etymology}\n\n💡 Mnemonic: ${result.mnemonic ?? "Not provided"}`
+    const telegramShareUrl = `https://t.me/share/url?text=${encodeURIComponent(shareText)}`
     const tg = (window as TelegramWindow)?.Telegram?.WebApp
+    const isTelegram = typeof navigator !== "undefined" && navigator.userAgent.toLowerCase().includes("telegram")
 
     if (tg) {
       if (tg.shareMessage) {
         tg.shareMessage(shareText)
         return
       }
-      const encoded = encodeURIComponent(shareText)
-      tg.openTelegramLink?.(`https://t.me/share/url?text=${encoded}`)
+      if (tg.openTelegramLink) {
+        tg.openTelegramLink(telegramShareUrl)
+        return
+      }
+      // When running inside Telegram but without the WebApp share APIs, force the Telegram share sheet.
+      if (isTelegram) {
+        window.location.href = telegramShareUrl
+        return
+      }
+    } else if (isTelegram) {
+      window.location.href = telegramShareUrl
       return
     }
 
