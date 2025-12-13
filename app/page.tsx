@@ -1,10 +1,20 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Search, Share2, BookOpen, Lightbulb, BookText } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+
+declare global {
+  interface TelegramWebApp {
+    ready: () => void
+    shareMessage?: (text: string) => void
+  }
+  interface TelegramWindow extends Window {
+    Telegram?: { WebApp?: TelegramWebApp }
+  }
+}
 
 interface SearchResult {
   word: string
@@ -18,6 +28,11 @@ export default function EtyMiniApp() {
   const [isLoading, setIsLoading] = useState(false)
   const [result, setResult] = useState<SearchResult | null>(null)
   const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const tg = (window as TelegramWindow)?.Telegram?.WebApp
+    tg?.ready()
+  }, [])
 
   const handleSearch = async () => {
     if (!query.trim()) return
@@ -56,6 +71,13 @@ export default function EtyMiniApp() {
   const handleShare = () => {
     if (!result) return
     const shareText = `📚 ${result.word}\n\n📖 Etymology: ${result.etymology}\n\n💡 Mnemonic: ${result.mnemonic ?? "Not provided"}`
+    const tg = (window as TelegramWindow)?.Telegram?.WebApp
+
+    if (tg?.shareMessage) {
+      tg.shareMessage(shareText)
+      return
+    }
+
     navigator.share?.({ text: shareText }).catch(() => {
       navigator.clipboard.writeText(shareText)
     })
