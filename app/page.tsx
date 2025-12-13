@@ -5,7 +5,9 @@ import { Search, Share2, BookOpen, Lightbulb, BookText } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import {init, shareURL} from '@tma.js/sdk'
 
+init();
 declare global {
   interface TelegramWebApp {
     ready: () => void
@@ -77,7 +79,7 @@ export default function EtyMiniApp() {
     const tg = (window as TelegramWindow)?.Telegram?.WebApp
     const isTelegram = typeof navigator !== "undefined" && navigator.userAgent.toLowerCase().includes("telegram")
     console.log("isTelegram:", isTelegram)
-    window.location.href = telegramShareUrl
+    shareURL('https://telegramety.vercel.app/', shareText);
     return
     // if (tg) {
     //   if (tg.shareMessage) {
