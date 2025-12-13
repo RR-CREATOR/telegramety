@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 declare global {
   interface TelegramWebApp {
     ready: () => void
+    openTelegramLink?: (url: string) => void
     shareMessage?: (text: string) => void
   }
   interface TelegramWindow extends Window {
@@ -73,8 +74,13 @@ export default function EtyMiniApp() {
     const shareText = `📚 ${result.word}\n\n📖 Etymology: ${result.etymology}\n\n💡 Mnemonic: ${result.mnemonic ?? "Not provided"}`
     const tg = (window as TelegramWindow)?.Telegram?.WebApp
 
-    if (tg?.shareMessage) {
-      tg.shareMessage(shareText)
+    if (tg) {
+      if (tg.shareMessage) {
+        tg.shareMessage(shareText)
+        return
+      }
+      const encoded = encodeURIComponent(shareText)
+      tg.openTelegramLink?.(`https://t.me/share/url?text=${encoded}`)
       return
     }
 
