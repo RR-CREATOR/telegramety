@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { init, shareURL } from "@tma.js/sdk"
+import { bold, italic } from "@gramio/format"
+
 
 interface SearchResult {
   word: string
@@ -87,12 +89,13 @@ const toItalic = (text: string) =>
 const handleShare = async () => {
   if (!result) return
 
-  const shareText =
-  `${toBold(result.word)}\n\n` +
-  `${toItalic(result.etymology)}` +
-  (result.mnemonic ? `\n\nMnemonic — ${result.mnemonic}` : "") +
-  (result.shortStory ? `\n\n${result.shortStory}` : "")
+  const formattedWord = bold(result.word).toString()
+  const formattedEtymology = italic(result.etymology).toString()
 
+  const shareText =
+    `${formattedWord}\n\n${formattedEtymology}` +
+    (result.mnemonic ? `\n\nMnemonic — ${result.mnemonic}` : "") +
+    (result.shortStory ? `\n\n${result.shortStory}` : "")
 
   try {
     shareURL("https://telegramety.vercel.app/#", shareText)
