@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { init, shareURL } from "@tma.js/sdk"
-import { bold, italic } from "gramio"
+import { bold, italic } from "@gramio/format"
 
 
 interface SearchResult {
@@ -64,27 +64,6 @@ export default function EtyMiniApp() {
       setIsLoading(false)
     }
   }
-
-  const toBold = (text: string) =>
-  text.replace(/[A-Za-z0-9]/g, (c) => {
-    if (c >= "A" && c <= "Z")
-      return String.fromCodePoint(c.charCodeAt(0) - 65 + 0x1d400)
-    if (c >= "a" && c <= "z")
-      return String.fromCodePoint(c.charCodeAt(0) - 97 + 0x1d41a)
-    if (c >= "0" && c <= "9")
-      return String.fromCodePoint(c.charCodeAt(0) - 48 + 0x1d7ce)
-    return c
-  })
-
-const toItalic = (text: string) =>
-  text.replace(/[A-Za-z]/g, (c) => {
-    if (c >= "A" && c <= "Z")
-      return String.fromCodePoint(c.charCodeAt(0) - 65 + 0x1d434)
-    if (c >= "a" && c <= "z")
-      return String.fromCodePoint(c.charCodeAt(0) - 97 + 0x1d44e)
-    return c
-  })
-
 
 const handleShare = async () => {
   if (!result) return
