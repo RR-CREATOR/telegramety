@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { init, shareURL } from "@tma.js/sdk"
-import { bold, italic } from "@gramio/format"
+import { bold, italic } from "gramio"
 
 
 interface SearchResult {
