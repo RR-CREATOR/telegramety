@@ -6,8 +6,6 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { init, shareURL } from "@tma.js/sdk"
-import { bold, italic, join } from "gramio"
-
 
 interface SearchResult {
   word: string
@@ -65,16 +63,36 @@ export default function EtyMiniApp() {
     }
   }
 
+  const toBold = (text: string) =>
+  text.replace(/[A-Za-z0-9]/g, (c) => {
+    if (c >= "A" && c <= "Z")
+      return String.fromCodePoint(c.charCodeAt(0) - 65 + 0x1d400)
+    if (c >= "a" && c <= "z")
+      return String.fromCodePoint(c.charCodeAt(0) - 97 + 0x1d41a)
+    if (c >= "0" && c <= "9")
+      return String.fromCodePoint(c.charCodeAt(0) - 48 + 0x1d7ce)
+    return c
+  })
+
+const toItalic = (text: string) =>
+  text.replace(/[A-Za-z]/g, (c) => {
+    if (c >= "A" && c <= "Z")
+      return String.fromCodePoint(c.charCodeAt(0) - 65 + 0x1d434)
+    if (c >= "a" && c <= "z")
+      return String.fromCodePoint(c.charCodeAt(0) - 97 + 0x1d44e)
+    return c
+  })
+
 
 const handleShare = async () => {
   if (!result) return
 
   const shareText =
-  String(bold(result.word)) +
-  "\n\n" +
-  String(italic(result.etymology)) +
+  `${toBold(result.word)}\n\n` +
+  `${toItalic(result.etymology)}` +
   (result.mnemonic ? `\n\nMnemonic — ${result.mnemonic}` : "") +
   (result.shortStory ? `\n\n${result.shortStory}` : "")
+
 
   try {
     shareURL("https://telegramety.vercel.app/#", shareText)
