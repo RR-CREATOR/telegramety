@@ -75,10 +75,10 @@ const handleShare = async () => {
   if (!result) return
 
   const shareText = `
-  *${result.word}*
+  **${result.word}**
 
-  _${result.etymology}_
-  ${result.mnemonic ? `\n\nMnemonic — ${result.mnemonic}` : ""}
+  __${result.etymology}__
+  ${result.mnemonic ? `\n\n**Mnemonic** — ${result.mnemonic}` : ""}
   ${result.shortStory ? `\n\n${result.shortStory}` : ""}
   `.trim()
 
