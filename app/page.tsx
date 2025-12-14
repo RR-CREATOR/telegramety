@@ -71,25 +71,25 @@ export default function EtyMiniApp() {
 }
 
 
-  const handleShare = async () => {
-    if (!result) return
-    const shareText = `
-          <b>${escapeHtml(result.word)}</b>
+const handleShare = async () => {
+  if (!result) return
 
-          <i>${escapeHtml(result.etymology)}</i>
-          ${result.mnemonic ? `\n\nMnemonic — ${escapeHtml(result.mnemonic)}` : ""}
-          ${result.shortStory ? `\n\n${escapeHtml(result.shortStory)}` : ""}
-          `.trim()
-    try {
-      shareURL("https://telegramety.vercel.app/", shareText)
-      return
-    } catch (err) {
-      console.warn("Telegram shareURL failed, falling back:", err)
-    }
-    navigator.share?.({ text: shareText }).catch(() => {
-      navigator.clipboard.writeText(shareText)
-    })
+  const shareText = `
+  *${result.word}*
+
+  _${result.etymology}_
+  ${result.mnemonic ? `\n\nMnemonic — ${result.mnemonic}` : ""}
+  ${result.shortStory ? `\n\n${result.shortStory}` : ""}
+  `.trim()
+
+  try {
+    shareURL("https://telegramety.vercel.app/", shareText)
+  } catch {
+    navigator.share?.({ text: shareText })
+      .catch(() => navigator.clipboard.writeText(shareText))
   }
+}
+
 
   return (
     <div className="min-h-screen bg-background">
