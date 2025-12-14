@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { init, shareURL } from "@tma.js/sdk"
+import { bold, italic, join } from "gramio"
+
 
 interface SearchResult {
   word: string
@@ -63,27 +65,19 @@ export default function EtyMiniApp() {
     }
   }
 
-  function escapeHtml(text: string) {
-  return text
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-}
-
 
 const handleShare = async () => {
   if (!result) return
 
-  const shareText = `
-  **${result.word}**
-
-  __${result.etymology}__
-  ${result.mnemonic ? `\n\n**Mnemonic** — ${result.mnemonic}` : ""}
-  ${result.shortStory ? `\n\n${result.shortStory}` : ""}
-  `.trim()
+  const shareText =
+  String(bold(result.word)) +
+  "\n\n" +
+  String(italic(result.etymology)) +
+  (result.mnemonic ? `\n\nMnemonic — ${result.mnemonic}` : "") +
+  (result.shortStory ? `\n\n${result.shortStory}` : "")
 
   try {
-    shareURL("https://telegramety.vercel.app/", shareText)
+    shareURL("https://telegramety.vercel.app/#", shareText)
   } catch {
     navigator.share?.({ text: shareText })
       .catch(() => navigator.clipboard.writeText(shareText))
