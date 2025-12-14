@@ -3,6 +3,24 @@ import { NextResponse } from "next/server"
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN
 const TELEGRAM_API = BOT_TOKEN ? `https://api.telegram.org/bot${BOT_TOKEN}` : null
 
+async function sendMessage(chatId: number, text: string) {
+  if (!TELEGRAM_API) {
+    console.warn("Message received but TELEGRAM_BOT_TOKEN is not set")
+    return
+  }
+
+  const resp = await fetch(`${TELEGRAM_API}/sendMessage`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ chat_id: chatId, text }),
+  })
+
+  if (!resp.ok) {
+    const body = await resp.text()
+    console.error("Failed to sendMessage:", resp.status, body)
+  }
+}
+
 async function answerInlineQuery(inlineQueryId: string) {
   if (!TELEGRAM_API) {
     console.warn("Inline query received but TELEGRAM_BOT_TOKEN is not set")
@@ -42,6 +60,10 @@ async function answerInlineQuery(inlineQueryId: string) {
 export async function POST(req: Request) {
   try {
     const update = await req.json()
+
+    if (update?.message?.chat?.id) {
+      await sendMessage(update.message.chat.id, "hi")
+    }
 
     if (update?.inline_query?.id) {
       await answerInlineQuery(update.inline_query.id)
