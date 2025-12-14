@@ -63,9 +63,23 @@ export default function EtyMiniApp() {
     }
   }
 
+  function escapeHtml(text: string) {
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+}
+
+
   const handleShare = async () => {
     if (!result) return
-    const shareText = `📚 ${result.word}\n\n📖 Etymology: ${result.etymology}\n\n💡 Mnemonic: ${result.mnemonic ?? "Not provided"}`
+    const shareText = `
+          <b>${escapeHtml(result.word)}</b>
+
+          <i>${escapeHtml(result.etymology)}</i>
+          ${result.mnemonic ? `\n\nMnemonic — ${escapeHtml(result.mnemonic)}` : ""}
+          ${result.shortStory ? `\n\n${escapeHtml(result.shortStory)}` : ""}
+          `.trim()
     try {
       shareURL("https://telegramety.vercel.app/", shareText)
       return
