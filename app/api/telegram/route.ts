@@ -9,10 +9,17 @@ async function sendMessage(chatId: number, text: string) {
     return
   }
 
+  const payload = {
+    chat_id: chatId,
+    text,
+    parse_mode: "HTML", // allow basic styling
+    disable_web_page_preview: true,
+  }
+
   const resp = await fetch(`${TELEGRAM_API}/sendMessage`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ chat_id: chatId, text }),
+    body: JSON.stringify(payload),
   })
 
   if (!resp.ok) {
@@ -37,7 +44,8 @@ async function answerInlineQuery(inlineQueryId: string) {
         title: "Send hi",
         description: "Reply with a friendly hi",
         input_message_content: {
-          message_text: "hi",
+          message_text: "<b>hi</b>",
+          parse_mode: "HTML",
         },
       },
     ],
@@ -62,7 +70,12 @@ export async function POST(req: Request) {
     const update = await req.json()
 
     if (update?.message?.chat?.id) {
-      await sendMessage(update.message.chat.id, "hi")
+      const styledReply = [
+        "<b>Hi there!</b>",
+        "This reply uses basic HTML styling.",
+        "Try an inline query too: @YourBotName <i>word</i>.",
+      ].join("\n")
+      await sendMessage(update.message.chat.id, styledReply)
     }
 
     if (update?.inline_query?.id) {

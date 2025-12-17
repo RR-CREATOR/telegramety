@@ -5,7 +5,7 @@ import { Search, Share2, BookOpen, Lightbulb, BookText } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { init, shareURL } from "@tma.js/sdk"
+import { init, retrieveLaunchParams, shareURL } from "@tma.js/sdk"
 
 
 interface SearchResult {
@@ -20,15 +20,47 @@ export default function EtyMiniApp() {
   const [isLoading, setIsLoading] = useState(false)
   const [result, setResult] = useState<SearchResult | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [userId, setUserId] = useState<number | null>(null)
 
   useEffect(() => {
     if (typeof window === "undefined") return
     try {
       init()
+      const launchParams = retrieveLaunchParams()
+      const telegramUserId =
+        launchParams?.tgWebAppData?.user?.id ??
+        (window as any)?.Telegram?.WebApp?.initDataUnsafe?.user?.id ??
+        null
+      setUserId(telegramUserId ?? null)
+      if (!telegramUserId) {
+        console.warn("Telegram user id not found; mini app must be opened from Telegram to send chat replies.")
+      }
     } catch (err) {
       console.warn("Telegram SDK init failed:", err)
     }
   }, [])
+
+  const sendResultToTelegram = async (searchResult: SearchResult) => {
+    if (!userId) return
+    try {
+      const resp = await fetch("/api/telegram/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          chatId: userId,
+          word: searchResult.word,
+          etymology: searchResult.etymology,
+          mnemonic: searchResult.mnemonic,
+          shortStory: searchResult.shortStory,
+        }),
+      })
+      if (!resp.ok) {
+        console.warn("Failed to push styled message to Telegram: response not ok")
+      }
+    } catch (err) {
+      console.warn("Failed to push styled message to Telegram:", err)
+    }
+  }
 
   const handleSearch = async () => {
     if (!query.trim()) return
@@ -52,6 +84,12 @@ export default function EtyMiniApp() {
       }
 
       setResult({
+        word: firstEntry.word || query.trim(),
+        etymology: firstEntry.etymology || "No etymology returned.",
+        mnemonic: firstEntry.mnemonic,
+        shortStory: firstEntry.shortStory || firstEntry.short_story,
+      })
+      await sendResultToTelegram({
         word: firstEntry.word || query.trim(),
         etymology: firstEntry.etymology || "No etymology returned.",
         mnemonic: firstEntry.mnemonic,
