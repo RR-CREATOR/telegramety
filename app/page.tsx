@@ -106,8 +106,8 @@ export default function EtyMiniApp() {
     if (!result) return
 
     const text =
-      `*${result.word}*\n\n` +
-      `_${result.etymology}_` +
+      `**${result.word}**\n\n` +
+      `__${result.etymology}__` +
       (result.mnemonic ? `\n\n*Mnemonic* — ${result.mnemonic}` : "") +
       (result.shortStory ? `\n\n${result.shortStory}` : "")
 
