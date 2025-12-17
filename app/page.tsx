@@ -105,16 +105,18 @@ export default function EtyMiniApp() {
   const handleShare = () => {
     if (!result) return
 
+    const word = encodeURIComponent(result.word.trim())
+
     const text =
-      `**${result.word}**\n\n` +
-      `__${result.etymology}__` +
-      (result.mnemonic ? `\n\n*Mnemonic* — ${result.mnemonic}` : "") +
+      `${result.word}\n\n` +
+      `${result.etymology}` +
+      (result.mnemonic ? `\n\nMnemonic — ${result.mnemonic}` : "") +
       (result.shortStory ? `\n\n${result.shortStory}` : "")
 
     const url =
       "https://t.me/share/url?" +
       new URLSearchParams({
-        url: "https://telegramety.vercel.app",
+        url: `https://ety.ai/?word=${word}`, // 👈 this controls the top link
         text
       }).toString()
 
