@@ -102,23 +102,14 @@ export default function EtyMiniApp() {
     }
   }
 
-  const escapeHTML = (s: string) =>
-    s.replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-
   const handleShare = () => {
     if (!result) return
 
     const text =
-      `<b>${escapeHTML(result.word)}</b><br><br>` +
-      `<i>${escapeHTML(result.etymology)}</i>` +
-      (result.mnemonic
-        ? `<br><br><b>Mnemonic</b> — ${escapeHTML(result.mnemonic)}`
-        : "") +
-      (result.shortStory
-        ? `<br><br>${escapeHTML(result.shortStory)}`
-        : "")
+      `*${result.word}*\n\n` +
+      `_${result.etymology}_` +
+      (result.mnemonic ? `\n\n*Mnemonic* — ${result.mnemonic}` : "") +
+      (result.shortStory ? `\n\n${result.shortStory}` : "")
 
     const url =
       "https://t.me/share/url?" +
@@ -129,7 +120,6 @@ export default function EtyMiniApp() {
 
     window.open(url, "_blank")
   }
-
 
 
   return (
