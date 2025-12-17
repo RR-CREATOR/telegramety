@@ -64,20 +64,34 @@ export default function EtyMiniApp() {
     }
   }
 
-  const handleShare = async () => {
+  const escapeHTML = (s: string) =>
+    s.replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+
+  const handleShare = () => {
     if (!result) return
 
-    const shareText =
-      `${result.word}\n\n${result.etymology}` +
-      (result.mnemonic ? `\n\nMnemonic — ${result.mnemonic}` : "") +
-      (result.shortStory ? `\n\n${result.shortStory}` : "")
+    const text =
+      `<b>${escapeHTML(result.word)}</b><br><br>` +
+      `<i>${escapeHTML(result.etymology)}</i>` +
+      (result.mnemonic
+        ? `<br><br><b>Mnemonic</b> — ${escapeHTML(result.mnemonic)}`
+        : "") +
+      (result.shortStory
+        ? `<br><br>${escapeHTML(result.shortStory)}`
+        : "")
 
-    try {
-      shareURL("https://telegramety.vercel.app/#", shareText)
-    } catch {
-      navigator.share?.({ text: shareText })?.catch(() => navigator.clipboard.writeText(shareText))
-    }
+    const url =
+      "https://t.me/share/url?" +
+      new URLSearchParams({
+        url: "https://telegramety.vercel.app",
+        text
+      }).toString()
+
+    window.open(url, "_blank")
   }
+
 
 
   return (
