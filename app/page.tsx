@@ -116,7 +116,7 @@ export default function EtyMiniApp() {
     const url =
       "https://t.me/share/url?" +
       new URLSearchParams({
-        url: `https://ety.ai/?word=${word}`, // 👈 this controls the top link
+        url: `https://ety.ai/?word=${word}`,
         text
       }).toString()
 
