@@ -113,7 +113,7 @@ Users can share word results directly to Telegram groups or chats using Telegram
 
 ## 8. Bot & Deployment
 
-- **Telegram Bot:** `@etytelegrambot`  
+- **Telegram Bot:** [`@etytelegrambot`](https://t.me/etytelegrambot)  
 - **Mini App URL:** https://telegramety.vercel.app  
 
 The Mini App is launched via the Telegram bot and runs as a web-based Mini App hosted on Vercel.
